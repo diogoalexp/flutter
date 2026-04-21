@@ -11,7 +11,21 @@ class StartScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('assets/images/quiz-logo.png', width: 300),
+          // Opacity(
+          //   opacity: 0.6,
+          //   child: Image.asset('assets/images/quiz-logo.png', width: 300),
+          // ),
+          // not well perfomant as below
+          Image.asset(
+            'assets/images/quiz-logo.png',
+            width: 300,
+            color: const Color.fromARGB(
+              150, //hack to transparance with better perfomance
+              255,
+              255,
+              255,
+            ),
+          ),
           SizedBox(height: 80),
           Text(
             'Learn Flutter the fun way!',
