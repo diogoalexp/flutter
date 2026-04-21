@@ -3,13 +3,13 @@ import 'package:roll_dice/styled_text.dart';
 
 Alignment startAligment = Alignment.topLeft; //typed
 var endAligment = Alignment.bottomRight; //typed in assignation
-final firstColor = Color.fromARGB(
+final thirdColor = Color.fromARGB(
   255,
   84,
   47,
   168,
 ); //typed in runtime, can accept functions result but will not be reassigned
-const secondColor = Color.fromARGB(
+const fortColor = Color.fromARGB(
   255,
   45,
   7,
@@ -17,14 +17,17 @@ const secondColor = Color.fromARGB(
 ); //typed in compilation time, cannot be reassigned
 
 class GradientContainer extends StatelessWidget {
-  const GradientContainer({super.key});
+  const GradientContainer(this.firstColor, this.secondColor, {super.key});
+
+  final Color firstColor;
+  final Color secondColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [firstColor, secondColor],
+          colors: [firstColor, secondColor, thirdColor, fortColor],
           begin: startAligment,
           end: endAligment,
         ),
