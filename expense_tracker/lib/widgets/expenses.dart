@@ -40,7 +40,6 @@ class _ExpensesState extends State<Expenses> {
     setState(() {
       _registeredExpenses.add(expense);
     });
-    print(_registeredExpenses);
   }
 
   void _removeExpense(Expense expense) {
