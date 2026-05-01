@@ -6,6 +6,8 @@ import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/widgets/new_item.dart';
 import 'package:http/http.dart' as http;
 
+const bool kUsingFutureStrategy = true;
+
 class GroceryList extends StatefulWidget {
   const GroceryList({super.key});
 
@@ -17,6 +19,9 @@ class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
   String? _error;
+
+  //future
+  late Future<List<GroceryItem>> _loadedItems;
 
   void _loadItems() async {
     final url = Uri.https(
@@ -69,6 +74,47 @@ class _GroceryListState extends State<GroceryList> {
     }
   }
 
+  Future<List<GroceryItem>> _loadItemsWithFuture() async {
+    final url = Uri.https(
+      'study-1a618-default-rtdb.firebaseio.com',
+      'flutter/shopping-list.json',
+    );
+
+    final response = await http.get(url);
+    if (response.statusCode >= 400) {
+      throw Exception("Failed to fetch grocery items. Please try again.");
+    }
+
+    if (response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return [];
+    }
+
+    final Map<String, dynamic> listData =
+        json.decode(response.body) as Map<String, dynamic>;
+    final List<GroceryItem> loadedItemList = [];
+
+    listData.forEach((key, value) {
+      final itemData = value as Map<String, dynamic>;
+      final category = categories.entries.firstWhere(
+        (element) => element.value.title == itemData['category'],
+      );
+      loadedItemList.add(
+        GroceryItem(
+          id: key,
+          name: itemData['name'] as String,
+          quantity: itemData['quantity'] as int,
+          category: category.value,
+        ),
+      );
+      _isLoading = false;
+    });
+
+    return loadedItemList;
+  }
+
   void _addItem() async {
     final newItem = await Navigator.of(
       context,
@@ -105,6 +151,7 @@ class _GroceryListState extends State<GroceryList> {
   void initState() {
     super.initState();
     _loadItems();
+    _loadedItems = _loadItemsWithFuture();
   }
 
   @override
@@ -145,7 +192,46 @@ class _GroceryListState extends State<GroceryList> {
         title: const Text('Your Groceries'),
         actions: [IconButton(onPressed: _addItem, icon: Icon(Icons.add))],
       ),
-      body: content,
+      // body: content
+      body: kUsingFutureStrategy
+          ? FutureBuilder(
+              future: _loadedItems,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(child: Text('No items added yet.'));
+                }
+
+                if (snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No items added yet.'));
+                }
+
+                var data = snapshot.data!;
+
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (ctx, index) => Dismissible(
+                    key: ValueKey(data[index].id),
+                    onDismissed: (direction) {
+                      _removeItem(data[index]);
+                    },
+                    child: ListTile(
+                      title: Text(data[index].name),
+                      leading: Container(
+                        width: 24,
+                        height: 24,
+                        color: data[index].category.color,
+                      ),
+                      trailing: Text(data[index].quantity.toString()),
+                    ),
+                  ),
+                );
+              },
+            )
+          : content,
     );
   }
 }
