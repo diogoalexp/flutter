@@ -1,15 +1,18 @@
+import 'package:favorite_places/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.onPickLocation});
+
+  final void Function(PlaceLocation image) onPickLocation;
 
   @override
   State<LocationInput> createState() => _LocationInputState();
 }
 
 class _LocationInputState extends State<LocationInput> {
-  LocationData? _pickedLocation;
+  PlaceLocation? _pickedLocation;
   bool _isGettingLocation = false;
 
   @override
@@ -53,10 +56,14 @@ class _LocationInputState extends State<LocationInput> {
 
       setState(() {
         _isGettingLocation = false;
-        _pickedLocation = locationData;
+        _pickedLocation = PlaceLocation(
+          address: 1.0,
+          longitude: locationData.longitude ?? 0,
+          latitude: locationData.latitude ?? 0,
+        );
       });
 
-      print(locationData);
+      widget.onPickLocation(_pickedLocation!);
     }
 
     if (_isGettingLocation) {
@@ -64,21 +71,32 @@ class _LocationInputState extends State<LocationInput> {
     }
 
     if (_pickedLocation != null) {
-      previewContent = Row(
+      previewContent = Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            _pickedLocation!.latitude.toString(),
+            _pickedLocation!.address.toString(),
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            _pickedLocation!.longitude.toString(),
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _pickedLocation!.latitude.toString(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                _pickedLocation!.longitude.toString(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
           ),
         ],
       );
