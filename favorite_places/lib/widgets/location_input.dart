@@ -129,7 +129,14 @@ class _LocationInputState extends State<LocationInput> {
             TextButton.icon(
               icon: const Icon(Icons.location_on),
               label: const Text('Select on Map'),
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('This feature is not available'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
             ),
           ],
         ),
