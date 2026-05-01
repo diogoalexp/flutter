@@ -202,7 +202,8 @@ class _GroceryListState extends State<GroceryList> {
                 }
 
                 if (snapshot.hasError) {
-                  return const Center(child: Text('No items added yet.'));
+                  String error = snapshot.error.toString();
+                  return Center(child: Text(error));
                 }
 
                 if (snapshot.data!.isEmpty) {
