@@ -57,7 +57,7 @@ class _LocationInputState extends State<LocationInput> {
       setState(() {
         _isGettingLocation = false;
         _pickedLocation = PlaceLocation(
-          address: 1.0,
+          address: DateTime.now().toString(),
           longitude: locationData.longitude ?? 0,
           latitude: locationData.latitude ?? 0,
         );
