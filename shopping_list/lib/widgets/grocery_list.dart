@@ -58,8 +58,6 @@ class _GroceryListState extends State<GroceryList> {
         _groceryItems.add(newItem);
       });
     }
-
-    _loadItems();
   }
 
   void _removeItem(GroceryItem item) {
