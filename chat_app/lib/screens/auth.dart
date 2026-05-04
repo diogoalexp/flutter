@@ -47,6 +47,15 @@ class _AuthScreenState extends State<AuthScreen> {
                           decoration: InputDecoration(labelText: 'Password'),
                           obscureText: true,
                         ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Signup'),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('Create an account'),
+                        ),
                       ],
                     ),
                   ),
