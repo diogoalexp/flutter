@@ -141,7 +141,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           if (!_isLogin)
                             TextFormField(
                               decoration: InputDecoration(
-                                labelText: 'Username',
+                                labelText: 'User Name',
                               ),
                               enableSuggestions: false,
                               validator: (value) {
